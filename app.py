@@ -53,11 +53,11 @@ def upload_file():
 
                 if missing_fields:
                     response["valid"] = False
-                    response["errors"].append(f"Missing fields in {sheet}: {', '.join(missing_fields)}")
+                    response["errors"].append(f"Missing fields in \"{sheet}\": {', '.join(missing_fields)}")
 
                 if df.empty:
                     response["valid"] = False
-                    response["errors"].append(f"Sheet {sheet} is empty.")
+                    response["errors"].append(f"Sheet \"{sheet}\" is empty.")
 
         if response["valid"]:
             # in real app here we will add logic to create new course to be shown on dashboard
