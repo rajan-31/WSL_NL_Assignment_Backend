@@ -7,6 +7,8 @@ load_dotenv()   # load environment variables from .env file
 
 app = Flask(__name__)
 
+# ================================================
+
 @app.route('/')
 def hello_world():  # put application's code here
     return render_template('index.html')
@@ -64,6 +66,8 @@ def upload_file():
 
     except Exception as e:
         return jsonify({"error": f"An error occurred while processing the file: {str(e)}"}), 500
+
+# ================================================
 
 if __name__ == '__main__':
     # use environment variables if present else default values
