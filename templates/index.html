@@ -30,6 +30,8 @@
                 const result = await response.json();
                 if (response.ok) {
                     responseDiv.innerHTML = `<p style=\"color: green;\">${result.message}</p>`;
+                } else if(result.details) {
+                    responseDiv.innerHTML = `<p style=\"color: red;\">${result.message}</p><ul>${result.details.map(err => `<li>${err}</li>`).join('')}</ul>`;
                 } else {
                     responseDiv.innerHTML = `<p style=\"color: red;\">${result.error}</p>`;
                 }
