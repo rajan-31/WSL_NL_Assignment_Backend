@@ -10,7 +10,7 @@ app = Flask(__name__)
 # ================================================
 
 @app.route('/')
-def hello_world():  # put application's code here
+def index_page():
     return render_template('index.html')
 
 # Define validation criteria
@@ -36,7 +36,7 @@ def upload_file():
         return jsonify({"error": "Invalid file format. Please upload an Excel file."}), 400
 
     try:
-        excel_data = pd.ExcelFile(file)
+        excel_data = pd.ExcelFile(file)     # throws error if file contents are not excel data
         response = {"valid": True, "errors": []}
 
         # Check for required sheets
@@ -60,6 +60,8 @@ def upload_file():
                     response["errors"].append(f"Sheet {sheet} is empty.")
 
         if response["valid"]:
+            # in real app here we will add logic to create new course to be shown on dashboard
+
             return jsonify({"message": "Validation successful."}), 200
         else:
             return jsonify({"message": "Validation failed.", "details": response["errors"]}), 400
