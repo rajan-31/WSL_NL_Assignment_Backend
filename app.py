@@ -12,9 +12,12 @@ def hello_world():  # put application's code here
     return render_template('index.html')
 
 # Define validation criteria
-REQUIRED_SHEETS = ["Course"]
+REQUIRED_SHEETS = ["Course", "Topic", "Resource", "Learner"]
 REQUIRED_FIELDS = {
     "Course": ["Course ID", "Course Name"],
+    "Topic": ["Topic ID", "Topic Name", "Description"],
+    "Resource": ["Resource ID", "Resource Name", "Resource Content", "Module ID", "Module Name", "Sub Module ID"],
+    "Learner": ["Learner ID", "Name", "Essay", "Module ID", "Submodule ID"]
 }
 
 @app.route('/upload', methods=['POST'])
