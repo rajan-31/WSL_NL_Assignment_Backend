@@ -36,32 +36,36 @@ def upload_file():
         return jsonify({"error": "Invalid file format. Please upload an Excel file."}), 400
 
     try:
-        excel_data = pd.ExcelFile(file)     # throws error if file contents are not excel data
+        excel_data = pd.ExcelFile(file)
         response = {"valid": True, "errors": []}
+
+        # Normalize sheet names
+        sheet_names = [sheet.strip().lower() for sheet in excel_data.sheet_names]
 
         # Check for required sheets
         for sheet in REQUIRED_SHEETS:
-            if sheet not in excel_data.sheet_names:
+            if sheet.lower() not in sheet_names:
                 response["valid"] = False
                 response["errors"].append(f"Missing required sheet: {sheet}")
 
         # Validate fields and data in each sheet
         for sheet, fields in REQUIRED_FIELDS.items():
-            if sheet in excel_data.sheet_names:
+            if sheet.lower() in sheet_names:
                 df = excel_data.parse(sheet)
-                missing_fields = [field for field in fields if field not in df.columns]
+                # Normalize column names
+                normalized_columns = [col.strip().lower() for col in df.columns]
+                missing_fields = [field for field in fields if field.lower() not in normalized_columns]
 
                 if missing_fields:
                     response["valid"] = False
                     response["errors"].append(f"Missing fields in \"{sheet}\": {', '.join(missing_fields)}")
 
-                if df.empty:
+                # Check if sheet has non-whitespace data
+                if df.dropna(how='all').applymap(lambda x: str(x).strip() != "").any().any() == False:
                     response["valid"] = False
-                    response["errors"].append(f"Sheet \"{sheet}\" is empty.")
+                    response["errors"].append(f"Sheet \"{sheet}\" is empty or contains only whitespace.")
 
         if response["valid"]:
-            # in real app here we will add logic to create new course to be shown on dashboard
-
             return jsonify({"message": "Validation successful."}), 200
         else:
             return jsonify({"message": "Validation failed.", "details": response["errors"]}), 400
